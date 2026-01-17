@@ -1,6 +1,9 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { GoogleSignInButton } from "@/components/GoogleSignInButton";
+import { Suspense } from "react";
+
+
 
 export default async function LoginPage() {
   const cookieStore = await cookies();
@@ -11,7 +14,8 @@ export default async function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white px-4">
+  
+         <div className="min-h-screen flex items-center justify-center bg-white px-4">
       <div className="w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-8 shadow-sm">
         <div className="mb-6 text-center">
           <h1 className="text-2xl font-semibold text-neutral-900">
@@ -31,5 +35,6 @@ export default async function LoginPage() {
         </p>
       </div>
     </div>
+   
   );
 }
