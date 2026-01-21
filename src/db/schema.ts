@@ -27,3 +27,31 @@ export const users = pgTable(
     firebaseUidIdx: index("users_firebase_uid_idx").on(table.firebaseUid),
   })
 );
+
+
+export const properties = pgTable(
+  "properties",
+  {
+    id: varchar("id", { length: 36 }).primaryKey(),
+
+    ownerId: text("owner_id").notNull(), // firebaseUid from auth
+
+    name: text("name").notNull(),
+
+    link: text("link"),
+
+    imageLink: text("image_link"),
+
+    postbackUrl: text("postback_url"),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    ownerIdx: index("properties_owner_idx").on(table.ownerId),
+  })
+);
+
+
+

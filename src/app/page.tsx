@@ -3,7 +3,7 @@ import { BiDollar } from 'react-icons/bi'
 import { HiOutlineLightningBolt } from 'react-icons/hi'
 import { MdVerified } from 'react-icons/md'
 import { HiArrowRight } from 'react-icons/hi'
-import { LogoutButton } from '@/components/Logout'
+
 
 const Home = () => {
   return (
@@ -74,9 +74,7 @@ const Home = () => {
             <HiArrowRight className="relative z-10 w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
           </button>
         </div>
-        <div className='mt-5'>
-          <LogoutButton />
-        </div>
+        
       </div>
 
       <style jsx>{`
