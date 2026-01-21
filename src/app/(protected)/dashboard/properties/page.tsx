@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { properties } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
-import { jwtVerify } from "jose";
+
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -11,16 +11,16 @@ import { HiHome, HiPlus } from "react-icons/hi2";
 import { BiLinkExternal } from "react-icons/bi";
 import { IoArrowBack } from "react-icons/io5";
 import Image from "next/image";
+import { requireUser } from "@/lib/auth-server";
 
-const secret = new TextEncoder().encode(process.env.SESSION_SECRET!);
+
 
 export default async function PropertiesPage() {
   const session = (await cookies()).get("session");
 
   if (!session) redirect("/login");
 
-  const { payload } = await jwtVerify(session.value, secret);
-  const ownerId = payload.uid as string;
+ const {uid : ownerId } = await requireUser()
 
   const list = await db
     .select()

@@ -1,29 +1,18 @@
 import { db } from "@/db";
 import { properties } from "@/db/schema";
+import { requireUser } from "@/lib/auth-server";
 import { randomUUID } from "crypto";
 import { desc, eq } from "drizzle-orm";
-import { jwtVerify } from "jose";
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import "server-only";
 
 
 
-const secret = new TextEncoder().encode(process.env.SESSION_SECRET!);
 
+//Insert Data route
 export async function POST(req: Request) {
     try {
-        //1. Get Session Cookie
-        const cookieStore = await cookies();
-        const session = cookieStore.get("session");
-
-        if (!session) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
-
-        // 2. Verify session and extract user
-        const { payload } = await jwtVerify(session.value, secret);
-        const ownerId = payload.uid as string;
+        const { uid: ownerId } = await requireUser()
 
         // 3. Parse request body
         const body = await req.json();
@@ -40,7 +29,7 @@ export async function POST(req: Request) {
         const link =
             typeof body.link === "string" ? body.link.trim() : "";
 
-        if (!name || !link) {
+        if (!name || !link || name === '""' || link === '""') {
             return NextResponse.json(
                 { error: "Name and link are required" },
                 { status: 400 }
@@ -61,8 +50,6 @@ export async function POST(req: Request) {
 
         // 6. Insert property
         const id = randomUUID()
-        console.log("POST imageLink RAW:", body.imageLink);
-        console.log("POST imageLink NORMALIZED:", imageLink);
 
         await db.insert(properties).values({
             id,
@@ -78,6 +65,10 @@ export async function POST(req: Request) {
 
 
     } catch (err) {
+        if (err instanceof Error && err.message === "UNAUTHORIZED") {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
         console.error("CREATE PROPERTY ERROR:", err);
         return NextResponse.json(
             { error: "Failed to create property" },
@@ -86,20 +77,11 @@ export async function POST(req: Request) {
     }
 }
 
+
+//List of data 
 export async function GET() {
     try {
-        //1.Get Session Cookie
-        const cookieStore = await cookies()
-        const session = cookieStore.get("session")
-
-        if (!session) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-        }
-
-        //2.Verify session and extract user
-        const { payload } = await jwtVerify(session.value, secret);
-        const ownerId = payload.uid as string
-
+        const { uid: ownerId } = await requireUser()
         // 3. Fetch only owner’s properties
         const result = await db
             .select()
@@ -111,11 +93,15 @@ export async function GET() {
         return NextResponse.json(result);
 
     } catch (err) {
-        console.error("LIST PROPERTIES ERROR:", err);
+        if (err instanceof Error && err.message === "UNAUTHORIZED") {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        console.error("LIST PROPERTY ERROR:", err);
         return NextResponse.json(
-            { error: "Failed to fetch properties" },
+            { error: "Failed to create property" },
             { status: 500 }
         );
-    }
 
+    }
 }

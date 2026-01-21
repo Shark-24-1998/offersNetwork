@@ -1,14 +1,14 @@
 import { db } from "@/db";
 import { properties } from "@/db/schema";
+import { requireUser } from "@/lib/auth-server";
 import { and, eq } from "drizzle-orm";
-import { jwtVerify } from "jose";
-import { cookies } from "next/headers";
+
 import { NextResponse } from "next/server";
 
 import "server-only";
 
-const secret = new TextEncoder().encode(process.env.SESSION_SECRET!);
 
+//Update data 
 export async function PUT(
     req: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -16,15 +16,7 @@ export async function PUT(
     try {
         const { id } = await params;
 
-        // 1. Session
-        const session = (await cookies()).get("session");
-        if (!session) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
-
-        const { payload } = await jwtVerify(session.value, secret);
-        const ownerId = payload.uid as string;
-
+       const { uid : ownerId} = await requireUser()
         // 2. Parse body
         const body = await req.json();
 
@@ -34,7 +26,7 @@ export async function PUT(
         const link =
             typeof body.link === "string" ? body.link.trim() : "";
 
-        if (!name || !link) {
+        if (!name || !link || name === '""' || link === '""') {
             return NextResponse.json(
                 { error: "Name and link are required" },
                 { status: 400 }
@@ -90,24 +82,14 @@ export async function PUT(
     }
 }
 
-
+//Delete data 
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
 
         // 1. Unwrap params (Next.js 16)
         const { id } = await params
 
-        //2.Get Session
-        const cookieStore = await cookies();
-        const session = cookieStore.get("session");
-        if (!session) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
-        //3.Verify session
-
-        const { payload } = await jwtVerify(session.value, secret)
-
-        const ownerId = payload.uid as string
+        const { uid : ownerId } = await requireUser()
 
 
 

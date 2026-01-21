@@ -1,13 +1,14 @@
 import { db } from "@/db";
 import { properties } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
-import { jwtVerify } from "jose";
+
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import EditPropertyForm from "./EditPropertyForm";
+import { requireUser } from "@/lib/auth-server";
 
 
-const secret = new TextEncoder().encode(process.env.SESSION_SECRET!)
+  
 
 export default async function EditPropertyPage({ params }: { params: Promise<{ id: string }> }){
     const { id } = await params;
@@ -15,8 +16,8 @@ export default async function EditPropertyPage({ params }: { params: Promise<{ i
     if(!session){
         redirect("/login")
     }
-    const {payload} = await jwtVerify(session.value, secret)
-    const ownerId = payload.uid as string
+    
+    const { uid : ownerId } = await requireUser()
 
     const result = await db
     .select()
