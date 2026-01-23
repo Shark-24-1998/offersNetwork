@@ -4,7 +4,9 @@ import {
   varchar,
   timestamp,
   index,
+  jsonb,
 } from "drizzle-orm/pg-core";
+
 
 export const users = pgTable(
   "users",
@@ -29,6 +31,7 @@ export const users = pgTable(
 );
 
 
+
 export const properties = pgTable(
   "properties",
   {
@@ -50,6 +53,41 @@ export const properties = pgTable(
   },
   (table) => ({
     ownerIdx: index("properties_owner_idx").on(table.ownerId),
+  })
+);
+
+export type TierStep = {
+  tier: number;
+  event: string;
+  payout: number;
+};
+
+export const offers = pgTable(
+  "offers",
+  {
+    id: varchar("id", { length: 36 }).primaryKey(),
+
+    ownerId: text("owner_id").notNull(), // firebase uid
+
+    title: text("title").notNull(),
+
+    link: text("link").notNull(),
+
+    tierWiseSteps: jsonb("tier_wise_steps").$type<TierStep[]>().notNull(),
+    // [{ tier: 1, event: "install", payout: 0.5 }]
+
+    includedCountries: text("included_countries").array().notNull(),
+    // ["AU", "IN"]
+
+    excludedCountries: text("excluded_countries").array().notNull(),
+    // ["CN"]
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index("offers_owner_idx").on(table.ownerId),
   })
 );
 
