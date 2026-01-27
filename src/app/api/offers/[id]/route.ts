@@ -3,7 +3,7 @@ import { offers } from "@/db/schema"
 import { MaxPerTaskTierWise, TierWiseSteps } from "@/db/types"
 import { requireUser } from "@/lib/auth-server"
 import { and, eq } from "drizzle-orm"
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import "server-only"
 
 
@@ -234,17 +234,17 @@ export async function DELETE(
 
 // get for single fetch offer 
 export async function GET(
-  _req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }>  }
 ) {
   const { uid: ownerId } = await requireUser();
-
+  const {id } = await params
   const result = await db
     .select()
     .from(offers)
     .where(
       and(
-        eq(offers.id, params.id),
+        eq(offers.id, id),
         eq(offers.ownerId, ownerId)
       )
     )
