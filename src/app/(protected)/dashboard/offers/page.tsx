@@ -8,8 +8,9 @@ import { MdLocalOffer, MdAdd } from "react-icons/md";
 import { BiLinkExternal } from "react-icons/bi";
 import { FiEdit2 } from "react-icons/fi";
 import { IoArrowBack } from "react-icons/io5";
-import { HiGlobeAlt } from "react-icons/hi2";
+import { HiGlobeAlt, HiSparkles } from "react-icons/hi2";
 import { countriesData } from "@/lib/countries-data";
+import Image from "next/image";
 
 export default async function OffersPage() {
   const { uid: ownerId } = await requireUser();
@@ -43,7 +44,7 @@ export default async function OffersPage() {
             </div>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-700 bg-clip-text text-transparent">
               Offers
-            </h1>
+            </h1> 
           </div>
 
           <Link
@@ -100,16 +101,41 @@ export default async function OffersPage() {
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
                       {/* LEFT: info */}
                       <div className="flex-1 min-w-0 space-y-2">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-600 flex items-center justify-center shadow-md flex-shrink-0">
-                            <MdLocalOffer className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          {/* Square Image or Fallback Icon */}
+                          {offer.squareImage ? (
+                            <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden shadow-md flex-shrink-0 border border-purple-100">
+                              <Image
+                                src={offer.squareImage}
+                                alt={offer.title}
+                                className="w-full h-full object-cover"
+                                fill
+                              />
+                            </div>
+                          ) : (
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-600 flex items-center justify-center shadow-md flex-shrink-0">
+                              <MdLocalOffer className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+                            </div>
+                          )}
+                          
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-base sm:text-lg text-gray-900 truncate">
+                              {offer.title}
+                            </h3>
+                            {/* Rewards Value */}
+                            {offer.rewardsValue && (
+                              <div className="flex items-center gap-1.5 mt-0.5">
+                                <HiSparkles className="h-3.5 w-3.5 text-purple-600 flex-shrink-0" />
+                                <span className="text-xs sm:text-sm font-medium text-purple-600">
+                                  {offer.rewardsValue}
+                                </span>
+                              </div>
+                            )}
                           </div>
-                          <h3 className="font-semibold text-base sm:text-lg text-gray-900 truncate">
-                            {offer.title}
-                          </h3>
                         </div>
+                        
                         {offer.link && (
-                          <div className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-600 ml-10 sm:ml-12">
+                          <div className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-600 ml-12 sm:ml-14">
                             <BiLinkExternal className="h-3.5 w-3.5 flex-shrink-0" />
                             <Link
                               href={offer.link}
@@ -124,7 +150,7 @@ export default async function OffersPage() {
                       </div>
 
                       {/* RIGHT: actions */}
-                      <div className="flex items-center gap-2 sm:gap-3 ml-10 sm:ml-0">
+                      <div className="flex items-center gap-2 sm:gap-3 ml-12 sm:ml-0">
                         {/* Edit */}
                         <Link
                           href={`/dashboard/offers/${offer.id}`}
@@ -141,7 +167,7 @@ export default async function OffersPage() {
 
                     {/* Bottom Section: Country Flags */}
                     {(includedCountries.length > 0 || excludedCountries.length > 0) && (
-                      <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 ml-0 sm:ml-12 pt-2 border-t border-gray-100">
+                      <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 ml-0 sm:ml-14 pt-2 border-t border-gray-100">
                         {/* Included Countries */}
                         {includedCountries.length > 0 && (
                           <div className="flex items-start gap-2">

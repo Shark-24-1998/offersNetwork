@@ -10,10 +10,11 @@ import EditOfferForm from "./EditOfferForm";
 export default async function EditOfferPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const {id} =await  params  
   const { uid: ownerId } = await requireUser();
+  
   const result = await db
   .select()
   .from(offers)

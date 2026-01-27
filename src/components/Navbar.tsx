@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import { LogoutButton } from "./Logout";
 import { HiSparkles } from "react-icons/hi2";
 import { RiDashboardFill } from "react-icons/ri";
+import { MdLocalOffer } from "react-icons/md";
 
 export type NavbarUser = {
     email: string | null;
@@ -66,7 +67,16 @@ export default function Navbar({
             </Link>
 
             {/* Right Section */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+                {/* All Offers Link */}
+                <Link
+                    href="/public/offers"
+                    className="group relative inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors duration-300 rounded-lg hover:bg-pink-50"
+                >
+                    <MdLocalOffer className="h-5 w-5 transition-transform duration-300 group-hover:scale-110" />
+                    <span className="hidden sm:inline font-semibold">All Offers</span>
+                </Link>
+
                 {user ? (
                     <>
                         {/* Dashboard Button */}
@@ -76,7 +86,7 @@ export default function Navbar({
                         >
                             <span className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                             <RiDashboardFill className="relative z-10 h-4 w-4 transition-transform duration-300 group-hover:rotate-12" />
-                            <span className="relative z-10 font-semibold tracking-wide">
+                            <span className="relative z-10 font-semibold tracking-wide hidden sm:inline">
                                 Dashboard
                             </span>
                         </Link>
@@ -106,7 +116,7 @@ export default function Navbar({
                             {open && (
                                 <div className="absolute right-0 mt-3 w-64 rounded-2xl border border-pink-100 bg-white shadow-2xl shadow-pink-500/20 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                                     <div className="px-5 py-4 bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 border-b border-pink-100">
-                                        <p className="text-xs font-medium text-gray-500 mb-1">Signed in as : {user.name}</p>
+                                        <p className="text-xs font-medium text-gray-500 mb-1">Signed in as: {user.name}</p>
                                         <p className="text-sm font-semibold text-gray-900 truncate">
                                             {user.email}
                                         </p>

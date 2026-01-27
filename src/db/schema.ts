@@ -6,6 +6,7 @@ import {
   index,
   jsonb,
 } from "drizzle-orm/pg-core";
+import { MaxPerTaskTierWise, TierWiseSteps} from "./types";
 
 
 export const users = pgTable(
@@ -56,11 +57,6 @@ export const properties = pgTable(
   })
 );
 
-export type TierStep = {
-  tier: number;
-  event: string;
-  payout: number;
-};
 
 export const offers = pgTable(
   "offers",
@@ -73,14 +69,22 @@ export const offers = pgTable(
 
     link: text("link").notNull(),
 
-    tierWiseSteps: jsonb("tier_wise_steps").$type<TierStep[]>().notNull(),
-    // [{ tier: 1, event: "install", payout: 0.5 }]
+    bannerImage : text("banner_image").notNull(),
+
+    squareImage : text("square_image").notNull(),
+
+    rewardsValue: text("rewards_value").notNull(),
+
+    tierWiseSteps: jsonb("tier_wise_steps").$type<TierWiseSteps>().notNull(),
+    
+    maxPerTaskTierWise : jsonb("max_per_task_tier_wise").$type<MaxPerTaskTierWise>().notNull(),
+
 
     includedCountries: text("included_countries").array().notNull(),
-    // ["AU", "IN"]
+
 
     excludedCountries: text("excluded_countries").array().notNull(),
-    // ["CN"]
+    
 
     createdAt: timestamp("created_at").defaultNow().notNull(),
 
