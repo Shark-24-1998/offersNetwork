@@ -96,4 +96,28 @@ export const offers = pgTable(
 );
 
 
+export const visitors = pgTable(
+  "visitors",
+  {
+    clickId: varchar("click_id", { length: 36 }).primaryKey(),
+
+    uid: text("uid").notNull(),
+
+    pid: text("pid").notNull(),
+
+    offerId: varchar("offer_id", { length: 36 })
+      .notNull()
+      .references(() => offers.id),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    offerIdx: index("visitors_offer_idx").on(table.offerId),
+    uidIdx: index("visitors_uid_idx").on(table.uid),
+    offerUidIdx: index("visitors_offer_uid_idx").on(
+      table.offerId,
+      table.uid
+    ),
+  })
+);
 

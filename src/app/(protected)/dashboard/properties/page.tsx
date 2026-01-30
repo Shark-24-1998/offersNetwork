@@ -1,7 +1,6 @@
 import { db } from "@/db";
 import { properties } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
-
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -12,15 +11,17 @@ import { BiLinkExternal } from "react-icons/bi";
 import { IoArrowBack } from "react-icons/io5";
 import Image from "next/image";
 import { requireUser } from "@/lib/auth-server";
+import CopyButton from "@/components/CopyButton";
 
 
 
 export default async function PropertiesPage() {
+
   const session = (await cookies()).get("session");
 
   if (!session) redirect("/login");
 
- const {uid : ownerId } = await requireUser()
+  const { uid: ownerId } = await requireUser()
 
   const list = await db
     .select()
@@ -94,7 +95,7 @@ export default async function PropertiesPage() {
                 className="group relative overflow-hidden rounded-2xl border border-pink-100 bg-white p-4 sm:p-5 shadow-md shadow-pink-500/5 transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/10 hover:border-pink-200"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-rose-50/30 via-pink-50/30 to-purple-50/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                
+
                 <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                   {/* LEFT: info */}
                   <div className="flex-1 min-w-0 space-y-1">
@@ -119,14 +120,22 @@ export default async function PropertiesPage() {
                     {p.link && (
                       <div className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-600 ml-10 sm:ml-12">
                         <BiLinkExternal className="h-3.5 w-3.5 flex-shrink-0" />
-                        <a 
-                          href={p.link} 
-                          target="_blank" 
+                        <a
+                          href={p.link}
+                          target="_blank"
                           rel="noopener noreferrer"
                           className="hover:text-pink-600 transition-colors truncate"
                         >
                           {p.link}
                         </a>
+                      </div>
+                    )}
+                    {p.id && (
+                      <div className="flex items-center gap-2 ml-10 sm:ml-12 group">
+                        <code className="text-xs sm:text-sm text-gray-600 bg-gray-50 px-2.5 py-1 rounded-md transition-all duration-200 group-hover:bg-gray-100 group-hover:text-gray-800">
+                         Property-Id:{p.id}
+                        </code>
+                        <CopyButton text={p.id} label="Copy ID" />
                       </div>
                     )}
                   </div>

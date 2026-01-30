@@ -16,6 +16,8 @@ interface OfferStep {
   coins: number | string;
 }
 
+
+
 export default async function OfferDetailPage({ params }: PageProps) {
   const { id } = await params;
 
@@ -25,9 +27,16 @@ export default async function OfferDetailPage({ params }: PageProps) {
     .where(eq(offers.id, id))
     .limit(1);
 
+
+
   if (!offer) {
-    notFound();
+    notFound()
   }
+  
+  const separator = offer.link.includes('?') ? '&' : '?';
+  const redirectUrl = `${offer.link}${separator}referrer={uid}-{pid}`;
+
+
 
   // Casting for type safety
   const tierWiseSteps = (offer.tierWiseSteps as unknown) as Record<string, OfferStep[]>;
@@ -60,7 +69,7 @@ export default async function OfferDetailPage({ params }: PageProps) {
 
       <div className="container mx-auto px-6 py-8 max-w-5xl">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
+
           {/* Main Content Column */}
           <div className="lg:col-span-2 space-y-8">
             {/* Header / Hero Section */}
@@ -102,7 +111,7 @@ export default async function OfferDetailPage({ params }: PageProps) {
                 </div>
 
                 <Link
-                  href={offer.link}
+                  href={redirectUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center w-full md:w-auto bg-blue-600 text-white font-bold px-10 py-4 rounded-2xl hover:bg-blue-700 transition-all hover:shadow-[0_10px_30px_-5px_rgba(37,99,235,0.4)]"
@@ -161,7 +170,7 @@ export default async function OfferDetailPage({ params }: PageProps) {
           <div className="space-y-6">
             <div className="bg-white rounded-[2rem] border border-slate-200/60 p-8 sticky top-24">
               <h2 className="text-xl font-black mb-6 text-slate-900">Availability</h2>
-              
+
               {offer.includedCountries.length > 0 ? (
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 text-green-600">
@@ -192,7 +201,7 @@ export default async function OfferDetailPage({ params }: PageProps) {
                 </div>
               )}
 
-             
+
             </div>
           </div>
 

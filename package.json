@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "cookie": "^1.1.1",
+    "copy-to-clipboard": "^3.3.3",
     "dotenv": "^17.2.3",
     "drizzle-kit": "^0.31.8",
     "drizzle-orm": "^0.45.1",

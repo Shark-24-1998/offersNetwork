@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { HiSparkles, HiHome } from "react-icons/hi2";
 import { MdLocalOffer } from "react-icons/md";
+import { HiUserGroup } from "react-icons/hi2";
 
 export default function DashboardPage() {
   return (
@@ -20,13 +21,13 @@ export default function DashboardPage() {
             </h1>
           </div>
           <p className="text-gray-600 text-base sm:text-lg ml-0 sm:ml-14 pl-0 sm:pl-0">
-            Manage your properties and offers from here.
+            Manage your properties, offers, and visitors from here.
           </p>
         </div>
 
         {/* Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6 max-w-full sm:max-w-2xl">
-          {/* Properties Card */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {/* Properties Card - Pink */}
           <Link
             href="/dashboard/properties"
             className="group relative overflow-hidden rounded-2xl border border-pink-100 bg-white p-5 sm:p-6 shadow-lg shadow-pink-500/10 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-pink-500/20 active:scale-95"
@@ -56,20 +57,20 @@ export default function DashboardPage() {
             </div>
           </Link>
 
-          {/* Offers Card*/}
+          {/* Offers Card - Blue */}
           <Link
             href="/dashboard/offers"
-            className="group relative overflow-hidden rounded-2xl border border-pink-100 bg-white p-5 sm:p-6 shadow-lg shadow-pink-500/10 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-pink-500/20 active:scale-95"
+            className="group relative overflow-hidden rounded-2xl border border-blue-100 bg-white p-5 sm:p-6 shadow-lg shadow-blue-500/10 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20 active:scale-95"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             
             <div className="relative space-y-2 sm:space-y-3">
-              <div className="inline-flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-rose-500 via-pink-500 to-purple-600 shadow-lg shadow-pink-500/30 transition-transform duration-300 group-hover:rotate-6">
+              <div className="inline-flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-500 to-blue-600 shadow-lg shadow-blue-500/30 transition-transform duration-300 group-hover:rotate-6">
                 <MdLocalOffer className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
               </div>
               
               <div>
-                <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-rose-600 via-pink-600 to-purple-700 bg-clip-text text-transparent">
+                <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 bg-clip-text text-transparent">
                   Offers
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-600 mt-1">
@@ -77,8 +78,38 @@ export default function DashboardPage() {
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 text-xs sm:text-sm font-medium text-pink-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <div className="flex items-center gap-2 text-xs sm:text-sm font-medium text-blue-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                 <span>View offers</span>
+                <svg className="h-3 w-3 sm:h-4 sm:w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </div>
+          </Link>
+
+          {/* Visitors Card - Green */}
+          <Link
+            href="/dashboard/visitors"
+            className="group relative overflow-hidden rounded-2xl border border-emerald-100 bg-white p-5 sm:p-6 shadow-lg shadow-emerald-500/10 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-emerald-500/20 active:scale-95"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-teal-50 to-green-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            
+            <div className="relative space-y-2 sm:space-y-3">
+              <div className="inline-flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-emerald-500 via-teal-500 to-green-600 shadow-lg shadow-emerald-500/30 transition-transform duration-300 group-hover:rotate-6">
+                <HiUserGroup className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+              </div>
+              
+              <div>
+                <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-green-700 bg-clip-text text-transparent">
+                  Visitors
+                </h2>
+                <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                  Track and manage your visitors
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 text-xs sm:text-sm font-medium text-emerald-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <span>View visitors</span>
                 <svg className="h-3 w-3 sm:h-4 sm:w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
