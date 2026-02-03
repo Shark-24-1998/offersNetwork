@@ -5,8 +5,11 @@ import {
   timestamp,
   index,
   jsonb,
+  integer,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { MaxPerTaskTierWise, TierWiseSteps} from "./types";
+
 
 
 export const users = pgTable(
@@ -121,3 +124,29 @@ export const visitors = pgTable(
   })
 );
 
+export const callbacks = pgTable(
+  "callbacks",
+  {
+    id : varchar("id", {length:36}).primaryKey(),
+
+    propertyId : varchar("property_id", {length:36}).notNull().references(()=> properties.id),
+
+    offerId : varchar("offer_id", {length : 36}).notNull().references(()=> offers.id),
+
+    userId : text("user_id").notNull(),
+
+    level : integer("level").notNull(),
+
+    status : integer("status").notNull().default(0),
+
+    createdAt : timestamp("created_at").defaultNow().notNull(),
+},
+  (table)=>({
+    uniqueCallback : uniqueIndex("callbacks_unique_idx").on(
+        table.propertyId,
+        table.offerId,
+        table.userId,
+        table.level
+    ),
+  })
+);
