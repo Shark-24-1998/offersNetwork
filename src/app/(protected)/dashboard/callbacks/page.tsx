@@ -1,18 +1,13 @@
-import { db } from "@/db";
-import { callbacks } from "@/db/schema";
-import { desc } from "drizzle-orm";
 import { HiArrowPath, HiCheckCircle, HiClock, HiChartBar } from "react-icons/hi2";
+import CallbacksTable from "@/components/CallbacksTable";
+import { fetchCallbacks, getCallbacksStats } from "@/actions/callbacks.actions";
 
 export default async function CallbacksPage() {
-  const list = await db
-    .select()
-    .from(callbacks)
-    .orderBy(desc(callbacks.createdAt));
-
-  // Calculate stats
-  const completedCount = list.filter(cb => cb.status === 1).length;
-  const pendingCount = list.filter(cb => cb.status === 0).length;
-  const uniqueOffers = new Set(list.map(cb => cb.offerId)).size;
+  // Fetch initial data and stats
+  const [initialResult, stats] = await Promise.all([
+    fetchCallbacks({ limit: 100, offset: 0 }),
+    getCallbacksStats(),
+  ]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-orange-50/30">
@@ -46,7 +41,7 @@ export default async function CallbacksPage() {
               </div>
               <div>
                 <p className="text-sm text-gray-600">Total Callbacks</p>
-                <p className="text-2xl font-bold text-gray-900">{list.length}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
               </div>
             </div>
           </div>
@@ -58,7 +53,7 @@ export default async function CallbacksPage() {
               </div>
               <div>
                 <p className="text-sm text-gray-600">Completed</p>
-                <p className="text-2xl font-bold text-gray-900">{completedCount}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.completed}</p>
               </div>
             </div>
           </div>
@@ -70,125 +65,18 @@ export default async function CallbacksPage() {
               </div>
               <div>
                 <p className="text-sm text-gray-600">Pending</p>
-                <p className="text-2xl font-bold text-gray-900">{pendingCount}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.pending}</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Callbacks Table */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden">
-          <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-orange-50/50 to-amber-50/50">
-            <h2 className="text-lg font-semibold text-gray-900">
-              All Callbacks
-            </h2>
-            <p className="text-sm text-gray-600 mt-1">
-              Complete history of callback events
-            </p>
-          </div>
-
-          {list.length === 0 ? (
-            <div className="p-12 text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
-                <HiArrowPath className="h-8 w-8 text-gray-400" />
-              </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-1">
-                No callbacks yet
-              </h3>
-              <p className="text-sm text-gray-500">
-                Callback data will appear here once events are triggered
-              </p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Offer ID
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Property ID
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      User ID
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Level
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Created At
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {list.map((cb) => (
-                    <tr 
-                      key={cb.id}
-                      className="hover:bg-orange-50/30 transition-colors duration-150"
-                    >
-                      <td className="px-6 py-4">
-                        <code className="text-xs font-mono text-gray-900 bg-gray-50 px-2 py-1 rounded">
-                          {cb.offerId}
-                        </code>
-                      </td>
-                      <td className="px-6 py-4">
-                        <code className="text-xs font-mono text-gray-700 bg-gray-50 px-2 py-1 rounded">
-                          {cb.propertyId}
-                        </code>
-                      </td>
-                      <td className="px-6 py-4">
-                        <code className="text-xs font-mono text-gray-700 bg-gray-50 px-2 py-1 rounded">
-                          {cb.userId}
-                        </code>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-purple-50 text-purple-700 text-sm font-medium">
-                          Level {cb.level}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        {cb.status === 1 ? (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-50 text-green-700 text-sm font-medium">
-                            <HiCheckCircle className="h-4 w-4" />
-                            Completed
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 text-sm font-medium">
-                            <HiClock className="h-4 w-4" />
-                            Pending
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-600">
-                        <div className="flex items-center gap-2">
-                          <HiClock className="h-4 w-4 text-gray-400" />
-                          {cb.createdAt.toLocaleString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-
-        {/* Footer info */}
-        {list.length > 0 && (
-          <div className="text-center text-sm text-gray-500">
-            Showing all {list.length} callback{list.length !== 1 ? 's' : ''} • {uniqueOffers} unique offer{uniqueOffers !== 1 ? 's' : ''}
-          </div>
-        )}
+        <CallbacksTable 
+          initialData={initialResult.data}
+          initialHasMore={initialResult.hasMore}
+          initialTotal={initialResult.total}
+        />
       </div>
     </div>
   );
